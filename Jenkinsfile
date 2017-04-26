@@ -1,5 +1,5 @@
 node {
-   echo 'Branch $BRANCH_NAME, jobname $JOB_NAME'
+   echo "Branch ${env.BRANCH_NAME}, jobname ${env.JOB_NAME)}."
 
    def mvnHome
    stage('Preparation') { // for display purposes
@@ -16,7 +16,17 @@ node {
          sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean test"
     
    }
+
    stage('Results') {
       junit '**/target/surefire-reports/TEST-*.xml'
    }
+
+   stage('Final') {
+      when {
+	 environment name: "runFinal", value: "true"
+
+      }
+    
+    echo 'final was run'
+    }
 }

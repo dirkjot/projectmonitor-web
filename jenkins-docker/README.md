@@ -64,3 +64,9 @@ your configuration and your credentials.
   up the contents of the Jenkins war file for example. 
 
 
+
+# References
+
+Pipeline syntax overview: https://github.com/jenkinsci/pipeline-model-definition-plugin/wiki/Syntax-Reference
+
+More syntax: https://jenkins.io/doc/book/pipeline/syntax/

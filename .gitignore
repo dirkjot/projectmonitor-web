@@ -6,3 +6,4 @@ mvnw
 mvnw.cmd
 *.log
 manifest.yml
+*~
