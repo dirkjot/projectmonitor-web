@@ -1,36 +1,63 @@
 
 
-# Running Jenkins under docker (local unix machine)
+# Running Jenkins under docker 
 
 
-## Prerequisites
+## Cloud Foundry Installation
 
-
-- A docker installation
-- A unix/linux/macos machine
-
-
-## Start command
+To deploy to __Cloud Foundry__, you need insert come up with your own
+APPNAME.  Your Jenkins will show as APPNAME.cfapps.io (on PWS,
+similar for other versions of CF):
 
 ```
-docker run -it -p 9000:8080 -v /var/run/docker.sock:/var/run/docker.sock -v optjenkins:/opt/jenkins --name jenkins renewinkler/jenkins-openjdk
+cf push APPNAME --docker-image dirkjot/j3 
 ```
 
-What this does:
-- `run`: run an image, namely `renewinkler/jenkins-openjdk`
+Watch the logs for the admin password.  If you missed it, you can use
+the web console or try `cf logs APPNAME --recent`.
+
+
+### Running commmands on the Cloud Foundry container
+
+To finish setup, we will run commands on the container by creating an ssh connection to it.
+```
+cf ssh APPNAME COMMANDS ...
+```
+
+See the next step below for details.
+
+
+
+## Local Installation
+
+
+First, create the docker image
+
+```
+cd jenkins-docker
+docker build -t dirkjot/j3 .
+```
+
+To deploy __locally__ on port 9090:
+```
+docker run -it -p 9090:8080 -v /var/run/docker.sock:/var/run/docker.sock  \
+  --name j3 dirkjot/j3
+```
+
+Watch the logs for the admin password.  
+
+What this command does:
 - `-it`: interactive in a terminal
 - `-v /var/run..`:  create a docker volume, in this case linking the local
   machine's docker socket to the docker socket within the jenkins docker
   container
-- `-v optjenkins..`: create another docker volume, this one links the
-  `/opt/jenkins` directory structure in the jenkins docker container to the
-  `optjenkins` file storage area on the docker host.  If no file storage by 
-  that name exists, it will be created.  File storage is persisted over
-  docker sessions and container lifecycles.  
-- `--name jenkins`: name of the container. 
+- `--name j3`: name of the container. 
 - `-d` (optional): run container as a background process
 
-## Restarting it
+
+
+
+### Restarting a docker container
 
 Because the container is named, you have to remove an old one before you
 start a new instance (or give the new one a different name):
@@ -38,35 +65,64 @@ start a new instance (or give the new one a different name):
 docker rm jenkins
 ```
 
-## Running commmands on the container
+Do not use the `--rm` flag on `docker run`, as the procedure relies on
+restarting your container.
 
-Similar to `cf ssh`, you can run interactive commands in the running docker
-container.  This uses the already running container to spin up a Bash shell:
+
+### Running commmands on the local container
+
+Similar to `cf ssh` and `cf run-task`, you can run interactive
+commands in the running docker container.  This uses the already
+running container to spin up a Bash shell:
 
 ```
 docker exec -it jenkins /bin/bash
 ```
 
-## Creating a backup
+## Completing the setup - Jenkins web interface
 
-You should use the `/opt/jenkins` directory like a database, it contains all
-your configuration and your credentials.
+First, point your browser to the site (APPNAME.cfapps.io or similar;
+localhost:9090 for local installs).  On the 'first login' page, paste
+the admin password you found in the logs.
 
-- Determine where the `optjenkins` volume is located on your host (unix
-  machine):  
-  `docker inspect jenkins | grep Source.*optjenkins`.   
-- On a Ubuntu machine, this will point to
-  `/var/lib/docker/volumes/optjenkins/_data`, which we assume as the location
-  below
-- Elevate to root and zip up the tree:
-  `sudo tar czvf - /var/lib/docker/volumes/optjenkins/_data | cat -> "backup-$(date --iso-8601).tgz"`
-- This creates a copy of the full tree, you could use `--exclude` to not zip
-  up the contents of the Jenkins war file for example. 
+On the next page, do not install any plugins.
+
+Finish the setup wizard and you will land at the Jenkins main screen,
+with zero jobs showing.
+
+## Completing the setup - Running the setup script
+
+For Cloud Foundry:
+```
+cf ssh APPNAME -c 'app/lastmile/copy-test-project.sh'
+cf restart APPNAME
+```
+
+For local setups:
+```
+docker exec -it bash
+# inside docker container:
+./lastmile/copy-test-project.sh
+exit
+# back on host:
+docker restart j3
+
+```
+
+## OPEN
+
+- how to specify tracker project #
+- deploy last mile from jenkins
+
+
+
+
+
+
 
 
 
 # References
 
-Pipeline syntax overview: https://github.com/jenkinsci/pipeline-model-definition-plugin/wiki/Syntax-Reference
 
 More syntax: https://jenkins.io/doc/book/pipeline/syntax/

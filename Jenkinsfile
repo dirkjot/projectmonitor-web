@@ -1,10 +1,11 @@
 node {
-   echo "Branch ${env.BRANCH_NAME}, jobname ${env.JOB_NAME)}."
+   echo "Branch ${env.BRANCH_NAME}, jobname ${env.JOB_NAME}."
 
    def mvnHome
+
    stage('Preparation') { // for display purposes
       // Get some code from a GitHub repository
-      git 'https://github.com/projectmonitor/projectmonitor-web'
+      checkout scm  // git 'https://github.com/projectmonitor/projectmonitor-web'
       // Get the Maven tool.
       // ** NOTE: This 'M3' Maven tool must be configured
       // **       in the global configuration.           
@@ -22,11 +23,7 @@ node {
    }
 
    stage('Final') {
-      when {
-	 environment name: "runFinal", value: "true"
-
-      }
-    
-    echo 'final was run'
+      if ( env.JOB_NAME == "localmaster" ) {
+        echo 'final was run' }
     }
 }

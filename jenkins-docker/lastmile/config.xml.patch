@@ -1,0 +1,32 @@
+--- config.xml	2017-05-02 23:56:47.846378092 -0700
++++ config.xml.withvars	2017-05-02 23:58:24.783792095 -0700
+@@ -37,5 +37,27 @@
+     <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+   </crumbIssuer>
+   <nodeProperties/>
+-  <globalNodeProperties/>
++  <globalNodeProperties>
++    <hudson.slaves.EnvironmentVariablesNodeProperty>
++      <envVars serialization="custom">
++        <unserializable-parents/>
++        <tree-map>
++          <default>
++            <comparator class="hudson.util.CaseInsensitiveComparator"/>
++          </default>
++          <int>5</int>
++          <string>LASTMILE_CFNAME</string>
++          <string>lastmile</string>
++          <string>LASTMILE_QUEUE</string>
++          <string>undefined</string>
++          <string>LASTMILE_URL</string>
++          <string>http://lastmile.cfapps.io</string>
++          <string>MAIN_REPOSITORY</string>
++          <string>https://github.com/projectmonitor/testProject.git</string>
++          <string>SCRIPT_TOKEN</string>
++          <string>LastMile</string>
++        </tree-map>
++      </envVars>
++    </hudson.slaves.EnvironmentVariablesNodeProperty>
++  </globalNodeProperties>
+ </hudson>
+\ No newline at end of file
