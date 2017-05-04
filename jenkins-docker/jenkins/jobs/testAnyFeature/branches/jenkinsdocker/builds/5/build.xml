@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@2.10">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <jenkins.branch.BranchIndexingCause plugin="branch-api@2.0.8"/>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <jenkins.scm.api.SCMRevisionAction plugin="scm-api@2.1.1">
+      <revision class="jenkins.plugins.git.AbstractGitSCMSource$SCMRevisionImpl" plugin="git@3.3.0">
+        <head class="org.jenkinsci.plugins.github_branch_source.BranchSCMHead" plugin="github-branch-source@2.0.5">
+          <name>jenkinsdocker</name>
+        </head>
+        <hash>3f200976eafe74d72a473d2e72e019cd4bcf4bc7</hash>
+      </revision>
+    </jenkins.scm.api.SCMRevisionAction>
+    <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="workflow-cps-global-lib@2.8">
+      <libraries/>
+    </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
+  </actions>
+  <queueId>13</queueId>
+  <timestamp>1493270476107</timestamp>
+  <startTime>1493270476108</startTime>
+  <result>FAILURE</result>
+  <duration>1616</duration>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>FAILURE</result>
+    <script>node {
+   echo &quot;Branch ${System.getenv(&apos;BRANCH_NAME&apos;)}, jobname ${System.getenv(&apos;JOB_NAME&apos;)}.&quot;
+
+   def mvnHome
+   stage(&apos;Preparation&apos;) { // for display purposes
+      // Get some code from a GitHub repository
+      git &apos;https://github.com/projectmonitor/projectmonitor-web&apos;
+      // Get the Maven tool.
+      // ** NOTE: This &apos;M3&apos; Maven tool must be configured
+      // **       in the global configuration.           
+      mvnHome = tool &apos;M3&apos;
+   }
+   stage(&apos;Test&apos;) {
+      // Run the maven tests
+
+         sh &quot;&apos;${mvnHome}/bin/mvn&apos; -Dmaven.test.failure.ignore clean test&quot;
+    
+   }
+
+   stage(&apos;Results&apos;) {
+      junit &apos;**/target/surefire-reports/TEST-*.xml&apos;
+   }
+
+   stage(&apos;Final&apos;) {
+      when {
+	 environment name: &quot;runFinal&quot;, value: &quot;true&quot;
+
+      }
+    
+    echo &apos;final was run&apos;
+    }
+}
+</script>
+    <loadedScripts class="map"/>
+    <sandbox>true</sandbox>
+    <iota>7</iota>
+    <head>1:7</head>
+  </execution>
+  <checkouts class="hudson.util.PersistedList"/>
+</flow-build>

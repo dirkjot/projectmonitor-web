@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@2.10">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>admin</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <jenkins.scm.api.SCMRevisionAction plugin="scm-api@2.1.1">
+      <revision class="jenkins.plugins.git.AbstractGitSCMSource$SCMRevisionImpl" plugin="git@3.3.0">
+        <head class="org.jenkinsci.plugins.github_branch_source.BranchSCMHead" plugin="github-branch-source@2.0.5">
+          <name>jenkinsdocker</name>
+        </head>
+        <hash>484bc94230865e8fb0232bdc62f8db8fb45f37bc</hash>
+      </revision>
+    </jenkins.scm.api.SCMRevisionAction>
+  </actions>
+  <queueId>11</queueId>
+  <timestamp>1493188443291</timestamp>
+  <startTime>1493188443293</startTime>
+  <result>FAILURE</result>
+  <duration>1221</duration>
+  <keepLog>false</keepLog>
+  <checkouts class="hudson.util.PersistedList"/>
+</flow-build>
