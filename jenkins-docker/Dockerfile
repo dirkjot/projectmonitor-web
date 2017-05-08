@@ -53,12 +53,9 @@ RUN     apt-get update -qq \
 	do echo ${plugin}; curl -sf -o $JENKINS_HOME/plugins/${plugin}.hpi -L $JENKINS_MIRROR/plugins/${plugin}/latest/${plugin}.hpi; done  \
     &&  mkdir -p ${JENKINS_HOME}/lastmile
 
-COPY jenkins.sb.tgz .
+COPY jenkins.sb.tgz ${JENKINS_HOME}/lastmile/
 COPY lastmile/* ${JENKINS_HOME}/lastmile/
-
-RUN     tar xf jenkins.sb.tgz -C /tmp  \
-    &&  rm jenkins.sb.tgz   \
-    &&  chmod a+x ${JENKINS_HOME}/lastmile/*.sh
+RUN chmod a+x ${JENKINS_HOME}/lastmile/*.sh
     
 VOLUME $JENKINS_HOME/data
 WORKDIR $JENKINS_HOME

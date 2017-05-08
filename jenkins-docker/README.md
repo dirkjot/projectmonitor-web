@@ -6,11 +6,15 @@
 ## Cloud Foundry Installation
 
 To deploy to __Cloud Foundry__, you need insert come up with your own
-APPNAME.  Your Jenkins will show as APPNAME.cfapps.io (on PWS,
-similar for other versions of CF):
+APPNAME.  Your Jenkins will show as APPNAME.cfapps.pez.pivotal.io
+(or similar, depending on your version of CF).
+
+NOTE: This procedure requires the ability to push Docker images, which
+is currently not enabled on PWS.
 
 ```
-cf push APPNAME --docker-image dirkjot/j3 
+export APPNAME=...
+cf push $APPNAME --docker-image dirkjot/j3 
 ```
 
 Watch the logs for the admin password.  If you missed it, you can use
@@ -85,17 +89,22 @@ First, point your browser to the site (APPNAME.cfapps.io or similar;
 localhost:9090 for local installs).  On the 'first login' page, paste
 the admin password you found in the logs.
 
-On the next page, do not install any plugins.
+```
+ cf logs $APPNAME --recent | grep -C2 'Please use the following password to proceed to installation:'
+```
 
-Finish the setup wizard and you will land at the Jenkins main screen,
-with zero jobs showing.
+On the next page ('Customize Jenkins'), do not install any plugins by
+using the close button (X) in the top rigth.
+
+On the third page, hit 'Start Using Jenkins' and you will land at the
+Jenkins main screen, with zero jobs showing.
 
 ## Completing the setup - Running the setup script
 
 For Cloud Foundry:
 ```
-cf ssh APPNAME -c 'app/lastmile/copy-test-project.sh'
-cf restart APPNAME
+cf ssh $APPNAME -c 'app/lastmile/copy-test-project.sh'
+#cf restart $APPNAME
 ```
 
 For local setups:
@@ -106,6 +115,20 @@ docker exec -it bash
 exit
 # back on host:
 docker restart j3
+
+```
+
+
+Running the setup script from docker itself: Create a new freestyle project, name it 'initialize jenkins' or similar.  Do not connect to source control and create one build step which is to execute shell commands.  Paste these commands into the page, save and run this job.
+
+```
+cd ${JENKINS_HOME}/lastmile
+tar xf jenkins.sb.tgz
+cp -fR ./jenkins/jobs/sandbox ./jenkins/jobs/testAnyFeature ./jenkins/jobs/testMaster ${JENKINS_HOME}/jobs/
+cp -f ./jenkins/hudson.tasks.Maven.xml ${JENKINS_HOME}/
+cd ${JENKINS_HOME}
+patch  < lastmile/config.xml.patch
+
 
 ```
 
