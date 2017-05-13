@@ -1,0 +1,82 @@
+- job:
+    name: job1
+    builders:
+      - shell: |
+         echo "hello world "
+- job:
+    name: TestProject_CI
+    display-name: 'TestProject CI'
+    project-type: freestyle
+    defaults: global
+    disabled: false
+    quiet-period: 2
+    scm:
+      - git:
+         url: ssh:// 
+         branches:
+          - origin/master
+    builders:
+      - shell: |
+         mvn test
+- job:
+    name: TestProject_to_SA
+    display-name: TestProject to SA
+    project-type: freestyle
+    defaults: global
+    disabled: false
+    quiet-period: 2
+    # https://docs.openstack.org/infra/jenkins-job-builder/parameters.html
+    parameters:
+      - string:
+        name: ShaToBuild
+        default: NA
+        description: "SHA of branch to build / run CI on"
+    # https://docs.openstack.org/infra/jenkins-job-builder/builders.html#builders.shell
+    builders:
+      - shell: |
+         echo "do a rebase here"
+         export PATH=${PATH}:/usr/local/bin
+         mvn clean package -DskipTests
+
+         export TRACKER_PROJECT_ID=2008981
+         export TRACKER_TOKEN=8fa0d1fbd0676a810bed4d73ccb47750
+         ./ci/deliver_tracker_story.sh
+
+         ./ci/add_story_to_manifest.sh manifest-acceptance.yml ${GIT_COMMIT}
+         cf push -f manifest-acceptance.yml
+
+    # https://docs.openstack.org/infra/jenkins-job-builder/publishers.html#publishers.archive
+    publishers:
+      - archive:
+          artifacts: 'target/*SNAPSHOT*jar'
+          
+    # https://docs.openstack.org/infra/jenkins-job-builder/notifications.html
+    notifications:
+      - http:
+          url: ${LASTMILE_URL}/notifications
+          format: xml
+          event: all
+          timeout: 40000
+          log: 0
+
+- job:
+    name: TestProject_to_Production
+    display-name: TestProject to Production
+    project-type: freestyle
+    defaults: global
+    disabled: false
+    quiet-period: 2
+    builders:
+      - shell: |
+         echo "do a merge here"
+         export PATH=${PATH}:/usr/local/bin
+         mvn clean package -DskipTests
+
+         export TRACKER_PROJECT_ID=2008981
+         export TRACKER_TOKEN=8fa0d1fbd0676a810bed4d73ccb47750
+         ./ci/deliver_tracker_story.sh
+         cf push -f manifest-production.yml
+         
+         ./ci/add_story_to_manifest.sh manifest-acceptance.yml ${GIT_COMMIT}
+
+    

@@ -7,3 +7,5 @@ mvnw.cmd
 *.log
 manifest.yml
 *~
+venv/
+*.dpj
