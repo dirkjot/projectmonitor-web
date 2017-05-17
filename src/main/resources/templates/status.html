@@ -18,7 +18,7 @@
     </p>
     <p>
         SHA Currently Deployed in Story Acceptance:
-        <a th:text="|${storyAcceptanceDeployedSHA}|" th:href="|https://github.com/${githubUsername}/${githubProjectName}/commit/${storyAcceptanceDeployedSHA}|" />
+        <a th:text="|${storyAcceptanceDeployedSHA}|" th:href="|${githubProjectURL}/commit/${storyAcceptanceDeployedSHA}|" />
     </p>
     <div th:switch="${storyStatus}">
         <p th:case="'rejected'">
@@ -41,7 +41,7 @@
     </p>
     <p>
         SHA Currently Deployed in Production:
-        <a th:text="|${productionDeployedSHA}|" th:href="|https://github.com/${githubUsername}/${githubProjectName}/commit/${productionDeployedSHA}|" />
+        <a th:text="|${productionDeployedSHA}|" th:href="|${githubProjectURL}/commit/${productionDeployedSHA}|" />
     </p>
     <p th:text="|Last Deploy to Production was: ${productionDeployResponse}|"/>
 </body>
