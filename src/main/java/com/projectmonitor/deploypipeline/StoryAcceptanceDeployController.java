@@ -18,6 +18,7 @@ public class StoryAcceptanceDeployController {
         this.storyAcceptanceQueue = storyAcceptanceQueue;
     }
 
+    // this will be called from branch_ci.sh when the commit passes CI and finishes a story
     @RequestMapping(value = "/storyAcceptanceDeploy/{shaValue}-{storyID}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.CREATED)
     public Deploy put(@PathVariable String shaValue, @PathVariable String storyID){
