@@ -65,8 +65,7 @@ public class ProjectStatusController {
         }
 
         model.addAttribute("status", ciResponse.getResult());
-        model.addAttribute("githubUsername", applicationConfiguration.getGithubUsername());
-        model.addAttribute("githubProjectName", applicationConfiguration.getGithubProjectName());
+        model.addAttribute("githubProjectURL", applicationConfiguration.getGithubProjectURL());
         model.addAttribute("backgroundColor", aura);
         model.addAttribute("storyStatus", storyStatus);
         model.addAttribute("storyAcceptanceDeployResponse", storyAcceptanceDeployResponse.getResult());

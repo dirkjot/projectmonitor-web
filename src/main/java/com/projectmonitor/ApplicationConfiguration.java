@@ -13,8 +13,7 @@ public class ApplicationConfiguration {
     private String pivotalTrackerStoryDetailsUrl;
     private String storyAcceptanceUrl;
     private String productionUrl;
-    private String githubUsername;
-    private String githubProjectName;
+    private String githubProjectURL;
 
 
     public String getCiUrl() {
@@ -49,19 +48,12 @@ public class ApplicationConfiguration {
         this.productionUrl = productionUrl;
     }
 
-    public String getGithubUsername() {
-        return githubUsername;
+
+    public String getGithubProjectURL() {
+        return githubProjectURL;
     }
 
-    public void setGithubUsername(String githubUsername) {
-        this.githubUsername = githubUsername;
-    }
-
-    public String getGithubProjectName() {
-        return githubProjectName;
-    }
-
-    public void setGithubProjectName(String githubProjectName) {
-        this.githubProjectName = githubProjectName;
+    public void setGithubProjectURL(String githubProjectURL) {
+        this.githubProjectURL = githubProjectURL;
     }
 }
