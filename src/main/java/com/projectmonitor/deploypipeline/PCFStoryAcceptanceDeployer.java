@@ -51,7 +51,7 @@ public class PCFStoryAcceptanceDeployer {
                     null,
                     String.class);
         } catch (RuntimeException e) {
-            logger.info("Call to kickoff story acceptance deploy failed, cause: ", e.getMessage());
+            logger.info("Call to kickoff story acceptance deploy failed, cause: {}", e.getMessage());
             return false;
         }
 
