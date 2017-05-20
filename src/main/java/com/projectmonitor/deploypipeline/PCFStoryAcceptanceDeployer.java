@@ -51,7 +51,7 @@ public class PCFStoryAcceptanceDeployer {
                     null,
                     String.class);
         } catch (RuntimeException e) {
-            logger.info("Call to kickoff story acceptance deploy failed, cause: ", e.getMessage());
+            logger.info("Call to kickoff story acceptance deploy failed, cause: {}", e.getMessage());
             return false;
         }
 
@@ -63,12 +63,12 @@ public class PCFStoryAcceptanceDeployer {
                 try {
                     jenkinsJobStatus = jenkinsRestTemplate.getForObject(ciJobConfiguration.getStoryAcceptanceDeployStatusURL(), JenkinsJobStatus.class);
                 } catch (RuntimeException e) {
-                    logger.info("Call to story acceptance deploy status failed, but job kicked off, continuing polling...", e.getMessage());
+                    logger.info("Call to story acceptance deploy status failed, but job kicked off, continuing polling.... Error: {}", e.getMessage());
                     jenkinsJobStatus.setBuilding(true);
                 }
             } while (jenkinsJobStatus.isBuilding());
         } catch (InterruptedException e) {
-            logger.info("Some thread problem", e.getMessage());
+            logger.info("Some thread problem: {}", e.getMessage());
         }
 
         if (JENKINS_SUCCESS_MESSAGE.equals(jenkinsJobStatus.getResult())) {
